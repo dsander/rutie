@@ -1,0 +1,8 @@
+require 'rutie_ruby_example'
+
+GC.disable
+RutieExample.stack_allocated_returning_input
+RutieExample.stack_allocated_returning_from_closure
+RutieExample.heap_allocated_returning_input
+RutieExample.heap_allocated_returning_from_closure
+
