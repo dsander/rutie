@@ -86,6 +86,13 @@ methods! {
             }
         }
     }
+
+    fn many_arguments() -> AnyObject {
+        let ruby_class = Class::from_existing("Test");
+        let vec: Vec<AnyObject> = (0..10000).map(|i| RString::new_utf8(&format!("{}", i)).to_any_object()).collect();
+        ruby_class.send("many_args", Some(&vec));
+        NilClass::new().to_any_object()
+    }
 }
 
 fn fibonacci(n: u32) -> u32 {
@@ -106,5 +113,6 @@ pub extern "C" fn Init_rutie_ruby_gvl_example() {
         itself.def_self("heap_allocated_returning_from_closure", heap_allocated_returning_from_closure);
         itself.def_self("call_ruby_in_call_with_gvl", call_ruby_in_call_with_gvl);
         itself.def_self("create_thread", create_thread);
+        itself.def_self("many_arguments", many_arguments);
     });
 }
