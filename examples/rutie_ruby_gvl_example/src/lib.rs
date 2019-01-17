@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate rutie;
 
-use rutie::{Class, Object, RString, Thread, Fixnum, AnyObject, NilClass};
+use rutie::{Class, Object, RString, Thread, Fixnum, AnyObject, NilClass, GC};
 use std::sync::mpsc;
 use std::os::unix::io::AsRawFd;
 use std::os::unix::net::UnixStream;
@@ -90,7 +90,18 @@ methods! {
     fn many_arguments() -> AnyObject {
         let ruby_class = Class::from_existing("Test");
         let vec: Vec<AnyObject> = (0..10000).map(|i| RString::new_utf8(&format!("{}", i)).to_any_object()).collect();
-        ruby_class.send("many_args", Some(&vec));
+        // for o in &vec {
+        //     println!("{:?}", o);
+        //     GC::register(o);
+        //     GC::mark(o);
+        // }
+        // GC::disable();
+        ruby_class.send("many_args", Some(&vec.as_slice()));
+        // GC::enable();
+        // for o in &vec {
+        //     println!("xx {:?}", o);
+        //     GC::unregister(o);
+        // }
         NilClass::new().to_any_object()
     }
 }
