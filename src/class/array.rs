@@ -10,7 +10,7 @@ use {AnyObject, Object, RString, VerifiedObject, Enumerator};
 /// `Array`
 #[derive(Debug)]
 pub struct Array {
-    value: Value,
+    pub value: Value,
 }
 
 impl Array {

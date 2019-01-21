@@ -5,6 +5,7 @@ authors = ["Daniel P. Clark <6ftdan@gmail.com>"]
 
 [dependencies]
 rutie = { path = "../../" }
+lazy_static = "1"
 
 [lib]
 name = "rutie_ruby_gvl_example"

@@ -5,6 +5,7 @@ use rubysys::{thread, vm};
 use types::{c_int, c_void, CallbackPtr, Value};
 use binding::symbol::internal_id;
 use util;
+use Array;
 
 pub fn block_proc() -> Value {
     unsafe { vm::rb_block_proc() }
@@ -44,9 +45,19 @@ pub fn require(name: &str) {
     }
 }
 
+use std::sync::Mutex;
+lazy_static! {
+    static ref GUARD: Mutex<Array> = Mutex::new(Array::new());
+}
+
 pub fn call_method(receiver: Value, method: &str, arguments: &[Value]) -> Value {
     let (argc, argv) = util::process_arguments(arguments);
     let method_id = internal_id(method);
+
+    use binding::array;
+    for a in arguments {
+        array::push(GUARD.lock().unwrap().value, *a);
+    }
 
     // TODO: Update the signature of `rb_funcallv` in ruby-sys to receive an `Option`
     unsafe { vm::rb_funcallv(receiver, method_id, argc, argv) }
